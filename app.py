@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request, abort, flash
 from flask_bootstrap import Bootstrap5
 import forms
+from auth import auth
 
 app = Flask(__name__)
 
@@ -8,6 +9,8 @@ app.config.from_mapping(
     SECRET_KEY = 'secret_key_just_for_dev_environment',
     BOOTSTRAP_BOOTSWATCH_THEME = 'pulse'
 )
+
+app.register_blueprint(auth, url_prefix='/')
 
 from db import db, Todo, List, insert_sample  # (1.)
 
