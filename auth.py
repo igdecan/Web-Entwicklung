@@ -25,8 +25,11 @@ def login():
         return render_template('login.html', user=current_user)
 
 @auth.route('/logout')
+@login_required
 def logout():
-    return redirect(url_for('app.todos'))
+    logout_user()
+    flash('Logged out successfully.', category='success')
+    return redirect(url_for('auth.login'))
 
 @auth.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
