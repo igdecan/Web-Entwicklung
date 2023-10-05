@@ -1,5 +1,6 @@
 import click
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixing 
 from sqlalchemy import orm
 from app import app
 
@@ -8,6 +9,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todos.sqlite'
 db = SQLAlchemy()
 db.init_app(app)
 
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(150), unique=True)
+    username = db.Column(db.String(150))
+    password = db.Column(db.String(150))
+    
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
     complete = db.Column(db.Boolean, default=False)
