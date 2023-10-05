@@ -14,13 +14,13 @@ def login():
         user = User.query.filter_by(email=email).first()
         if user:
             if check_password_hash(user.password, password):
-                flash('Logged in successfully.', category='success')
+                flash('Logged in successfully.', 'warning')
                 login_user(user, remember=True)
-                return redirect(url_for('views.home'))
+                return redirect(url_for('app.todos'))
             else:
-                flash('Incorrect password, try again.', category='error')
+                flash('Incorrect password, try again.', 'warning')
         else:
-            flash('This email does not exist yet.', category='error')
+            flash('This email does not exist yet.', 'warning')
 
         return render_template('login.html', user=current_user)
 
@@ -28,7 +28,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash('Logged out successfully.', category='success')
+    flash('Logged out successfully.', 'success')
     return redirect(url_for('auth.login'))
 
 @auth.route('/sign_up', methods=['GET', 'POST'])
@@ -41,22 +41,22 @@ def sign_up():
 
         user = User.query.filter_by(email=email).first()
         if user:
-            flash('Email already exists, please log in.', category='error')
+            flash('Email already exists, please log in.', 'warning')
         elif len(email) < 4:
-            flash('Email must be longer than three characters.', category='error')
+            flash('Email must be longer than three characters.', 'warning')
         elif len(username) < 2:
-            flash('Username must be longer than 1 character.', category='error')
+            flash('Username must be longer than 1 character.', 'warning')
         elif password1 != password2:
-            flash('Passwords do not match.', category='error')
+            flash('Passwords do not match.', 'warning')
         elif len(password1) < 7:
-            flash('Password needs at least seven characters.', category='error')
+            flash('Password needs at least seven characters.', 'warning')
         else:
             new_user = User(email=email, username=username, password=generate_password_hash(
                 password1, method='sha256'))
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
-            flash('Registrierung erfolgreich.', category='success')
-            return redirect(url_for('views.home'))
+            flash('Account created.', 'success')
+            return redirect(url_for('app.todos'))
 
     return render_template("sign_up.html", user=current_user) 
