@@ -1,7 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request, abort, flash
 from flask_bootstrap import Bootstrap5
 import forms
-from auth import auth
 from flask_login import LoginManager 
 
 app = Flask(__name__)
@@ -11,9 +10,10 @@ app.config.from_mapping(
     BOOTSTRAP_BOOTSWATCH_THEME = 'pulse'
 )
 
+from auth import auth
 app.register_blueprint(auth, url_prefix='/')
 
-from db import db, User, Todo, List, insert_sample  # (1.)
+from db import db, User, Todo, List, insert_sample
 
 bootstrap = Bootstrap5(app)
 
