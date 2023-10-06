@@ -30,7 +30,7 @@ def load_user(id):
 def index():
     return redirect(url_for('todos'))
 
-@app.route('/todos/', methods=['GET', 'POST'])
+@app.route('/todos/', methods=['GET', 'POST']) #TODO: login required
 def todos():
     form = forms.CreateTodoForm()
     if request.method == 'GET':
