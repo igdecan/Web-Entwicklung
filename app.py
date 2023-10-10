@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request, abort, flash
 from flask_bootstrap import Bootstrap5
 import forms
-from flask_login import LoginManager 
+from flask_login import LoginManager, current_user, login_required
 
 app = Flask(__name__)
 
@@ -30,15 +30,16 @@ def load_user(id):
 def index():
     return redirect(url_for('todos'))
 
-@app.route('/todos/', methods=['GET', 'POST']) #TODO: login required
+@app.route('/todos/', methods=['GET', 'POST'])
+@login_required
 def todos():
     form = forms.CreateTodoForm()
     if request.method == 'GET':
-        todos = db.session.execute(db.select(Todo).order_by(Todo.id)).scalars()  # !!
+        todos = Todo.query.filter_by(user_id=current_user.id).order_by(Todo.id).all()  # !!
         return render_template('todos.html', todos=todos, form=form)
     else:  # request.method == 'POST'
         if form.validate():
-            todo = Todo(description=form.description.data)  # !!
+            todo = Todo(description=form.description.data, user_id=current_user.id)  # !!
             db.session.add(todo)  # !!
             db.session.commit()  # !!
             flash('Todo has been created.', 'success')
@@ -63,6 +64,7 @@ def todo(id):
             if form.validate():
                 form.populate_obj(todo)  # (4.)
                 todo.populate_lists([form.list_id.data])  # (5.)  # !!
+                todo.user_id = current_user.id
                 db.session.add(todo)  # !!
                 db.session.commit()  # !!
                 flash('Todo has been updated.', 'success')
@@ -79,14 +81,15 @@ def todo(id):
             return redirect(url_for('todo', id=id))
 
 @app.route('/lists/', methods=['GET', 'POST'])
+@login_required
 def lists():
     form = forms.CreateListForm()
     if request.method == 'GET':
-        lists = db.session.execute(db.select(List).order_by(List.name)).scalars()  # (6.)  # !!
+        lists = List.query.filter_by(user_id=current_user.id).order_by(List.name).all()  # (6.)  # !!
         return render_template('lists.html', lists=lists, form=form)
     else:
         if form.validate():
-            list = List(name=form.name.data)
+            list = List(name=form.name.data, user_id=current_user.id)
             db.session.add(list)
             db.session.commit()
             flash('List has been created.', 'success')
