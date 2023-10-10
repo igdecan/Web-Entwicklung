@@ -6,6 +6,10 @@ class CreateTodoForm(FlaskForm):
     description = StringField(validators=[InputRequired(), Length(min=5)])
     submit = SubmitField('Create')
 
+class CreateListForm(FlaskForm):
+    name = StringField(validators=[InputRequired(), Length(min=2)])
+    submit = SubmitField('Create')
+
 class TodoForm(FlaskForm):
     method = HiddenField()
     id = HiddenField()

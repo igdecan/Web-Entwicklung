@@ -78,10 +78,21 @@ def todo(id):
             flash('Nothing happened.', 'info')
             return redirect(url_for('todo', id=id))
 
-@app.route('/lists/')
+@app.route('/lists/', methods=['GET', 'POST'])
 def lists():
-    lists = db.session.execute(db.select(List).order_by(List.name)).scalars()  # (6.)  # !!
-    return render_template('lists.html', lists=lists)
+    form = forms.CreateListForm()
+    if request.method == 'GET':
+        lists = db.session.execute(db.select(List).order_by(List.name)).scalars()  # (6.)  # !!
+        return render_template('lists.html', lists=lists, form=form)
+    else:
+        if form.validate():
+            list = List(name=form.name.data)
+            db.session.add(list)
+            db.session.commit()
+            flash('List has been created.', 'success')
+        else:
+            flash('No list creation: validation error.', 'warning')
+        return redirect(url_for('lists'))
 
 @app.route('/lists/<int:id>')
 def list(id):
