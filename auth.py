@@ -61,4 +61,27 @@ def sign_up():
 
     return render_template("sign_up.html", user=current_user) 
 
-# TODO: Function delete account
+@auth.route('/account', methods=['GET', 'POST'])
+@login_required
+def account():
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if action == 'change_password':
+            return change_password()
+        elif action == 'delete_account':
+            return delete_account()
+
+    return render_template(account.html, user=current_user)
+
+def change_password():
+    # TODO: function change_password
+    return redirect(url_for('auth.account'))
+
+def delete_account(): 
+    user = current_user
+    db.session.delete(user)
+    db.session.commit()
+
+    logout_user()
+    flash('Your account has been deleted.', 'success')
+    return redirect(url_for('index'))
