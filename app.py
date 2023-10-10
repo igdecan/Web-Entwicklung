@@ -28,7 +28,10 @@ def load_user(id):
 @app.route('/index')
 @app.route('/')
 def index():
-    return redirect(url_for('todos'))
+    if current_user.is_authenticated:
+        return redirect(url_for('todos'))
+    else:
+        return render_template('home.html')
 
 @app.route('/todos/', methods=['GET', 'POST'])
 @login_required

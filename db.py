@@ -9,7 +9,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todos.sqlite'
 db = SQLAlchemy()
 db.init_app(app)
 
-class User(db.Model, UserMixin): #TODO: Relationships to ToDo's and/or Lists
+class User(db.Model, UserMixin): 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True)
     username = db.Column(db.String(150))

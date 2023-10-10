@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block TITLE %}Home{% endblock %}
+
+{% block HEADER %}
+    <h1 class="display-4">Todo Web App</h1>
+{% endblock %}
+
+{% block CONTENT %}
+    <p>Please <a href="{{ url_for('auth.login') }}">log in</a> or <a href="{{ url_for('auth.sign_up') }}">register</a> to use the app.</p>
+{% endblock %}
