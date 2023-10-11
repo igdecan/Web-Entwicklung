@@ -74,8 +74,15 @@ def account():
     return render_template('account.html', user=current_user)
 
 def change_password():
-    # TODO: function change_password
-    return redirect(url_for('auth.account'))
+    if request.method == 'POST':
+        new_password = request.form.get('new_password')
+        new_password_hashed = generate_password_hash(new_password, method='sha256')
+        current_user.password = new_password_hashed
+        db.session.commit()
+        flash('Password has been changed successfully.', 'success')
+        return redirect(url_for('auth.account'))
+
+    return render_template('account.html', user=current_user)
 
 def delete_account(): 
     user = current_user
