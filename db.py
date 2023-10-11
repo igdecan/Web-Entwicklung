@@ -59,7 +59,7 @@ def init():  # (1.)
 
 app.cli.add_command(init)  # (2.)
 
-def insert_sample():
+def insert_sample(): #TODO: Deleting insert_sample, update README.md
     # Delete all existing data, if any
     db.session.execute(db.delete(todo_list))
     db.session.execute(db.delete(Todo))

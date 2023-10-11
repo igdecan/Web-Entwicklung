@@ -14,9 +14,9 @@ def login():
         user = User.query.filter_by(email=email).first()
         if user:
             if check_password_hash(user.password, password):
-                flash('Logged in successfully.', 'warning')
+                flash('Logged in successfully.', 'success')
                 login_user(user, remember=True)
-                return redirect(url_for('app.todos'))
+                return redirect(url_for('todos'))
             else:
                 flash('Incorrect password, try again.', 'warning')
         else:
@@ -57,9 +57,9 @@ def sign_up():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Account created.', 'success')
-            return redirect(url_for('app.todos'))
+            return redirect(url_for('todos'))
 
-    return render_template("sign_up.html", user=current_user) 
+    return render_template("sign_up.html", user=current_user)
 
 @auth.route('/account', methods=['GET', 'POST'])
 @login_required
@@ -71,7 +71,7 @@ def account():
         elif action == 'delete_account':
             return delete_account()
 
-    return render_template(account.html, user=current_user)
+    return render_template('account.html', user=current_user)
 
 def change_password():
     # TODO: function change_password
