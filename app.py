@@ -1,9 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, request, abort, flash
 from flask_bootstrap import Bootstrap5
+from flask_restful import Api, Resource, reqparse
 import forms
 from flask_login import LoginManager, current_user, login_required
 
 app = Flask(__name__)
+api = Api(app)
 
 app.config.from_mapping(
     SECRET_KEY = 'secret_key_just_for_dev_environment',
@@ -130,3 +132,7 @@ def ex(id):
         return render_template('ex2.html')
     else:
         abort(404)
+
+todo_post_args = reqparse.RequestParser()
+todo_post_args.argument("description", type=str, help="Description of the ToDo", required=True)
+todo_post_args.argument("user_id", type=int, help="User_ID of the ToDo", required=True)
