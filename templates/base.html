@@ -28,6 +28,15 @@
                     {{ render_nav_item('todos', 'Todos') }}
                     {{ render_nav_item('lists', 'Lists') }}
                 </ul>
+                <ul class ="bar-nav ml-auto"> 
+                    {% if current_user.is_authenticated %}
+                        {{ render_nav_item('auth.account', 'Profile') }}
+                        {{ render_nav_item('auth.logout', 'Logout') }}
+                    {% else %}
+                        {{ render_nav_item('auth.sign_up', 'Sign Up') }}
+                        {{ render_nav_item('auth.login', 'Login') }}
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>
