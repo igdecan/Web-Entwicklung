@@ -14,8 +14,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     username = db.Column(db.String(150))
     password = db.Column(db.String(150))
-todos = db.relationship('Todo', backref='user', lazy=True)
-lists = db.relationship('List', backref='user', lazy=True)
+    todos = db.relationship('Todo', backref='user', lazy=True)
+    lists = db.relationship('List', backref='user', lazy=True)
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)

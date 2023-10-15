@@ -22,7 +22,7 @@ def login():
         else:
             flash('This email does not exist yet.', 'warning')
 
-        return render_template('login.html', user=current_user)
+    return render_template('login.html', user=current_user)
 
 @auth.route('/logout')
 @login_required
