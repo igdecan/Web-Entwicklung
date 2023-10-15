@@ -13,7 +13,7 @@ app.config.from_mapping(
 from auth import auth
 app.register_blueprint(auth, url_prefix='/')
 
-from db import db, User, Todo, List, insert_sample
+from db import db, User, Todo, List
 
 bootstrap = Bootstrap5(app)
 
@@ -107,11 +107,6 @@ def list(id):
         return render_template('list.html', list=list)
     else:
         return redirect(url_for('lists'))
-
-@app.route('/insert/sample')
-def run_insert_sample():
-    insert_sample()
-    return 'Database flushed and populated with some sample data.'
 
 @app.errorhandler(404)
 def http_not_found(e):
