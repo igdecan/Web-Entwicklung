@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request, abort, flash
 from flask_bootstrap import Bootstrap5
-from flask_restful import Api, Resource, reqparse
+from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 import forms
 from flask_login import LoginManager, current_user, login_required
 
@@ -136,3 +136,26 @@ def ex(id):
 todo_post_args = reqparse.RequestParser()
 todo_post_args.argument("description", type=str, help="Description of the ToDo", required=True)
 todo_post_args.argument("user_id", type=int, help="User_ID of the ToDo", required=True)
+
+resource_fields = {
+    'id': fields.Integer, 
+    'complete': fields.Boolean, 
+    'description': fields.String, 
+    'user_id': fields.Integer 
+}
+
+class Todo(Resource):
+    @marshal_with(resource_fields)
+    def get(self, todo_id):
+        return
+
+    @marshal_with(resource_fields)
+    def post(self, todo_id):
+        return
+
+    @marshal_with(resource_fields)
+    def patch(self, todo_id):
+        return
+
+    def delete(self, todo_id):
+        return
