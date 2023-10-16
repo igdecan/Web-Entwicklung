@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, url_for, render_template, request, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
-from db import db, User
+from db import db, User, List, Todo
 
 auth = Blueprint('auth', __name__)
 
@@ -86,6 +86,15 @@ def change_password():
 
 def delete_account(): 
     user = current_user
+
+    if user:
+        todos = Todo.query.filter_by(user_id=user.id).all()
+        for todo in todos:
+            db.session.delete(todo)
+
+        lists = List.query.filter_by(user_id=user.id).all()
+        for list in lists:
+            db.session.delete(list)
     db.session.delete(user)
     db.session.commit()
 
