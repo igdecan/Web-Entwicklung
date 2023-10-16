@@ -174,4 +174,12 @@ class SpecificTodo(Resource):
         db.session.commit()
         return todo, 201
 
+    def delete(self, todo_id):
+        todo = Todo.query.get(todo_id)
+        if not todo:
+            abort(404, message="Todo not found")
+        db.session.delete(todo)
+        db.session.commit()
+        return '', 204
+    
 api.add_resource(SpecificTodo, '/api/todo/<int:todo_id>')
