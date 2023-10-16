@@ -134,8 +134,8 @@ def ex(id):
         abort(404)
 
 todo_post_args = reqparse.RequestParser()
-todo_post_args.argument("description", type=str, help="Description of the ToDo", required=True)
-todo_post_args.argument("user_id", type=int, help="User_ID of the ToDo", required=True)
+todo_post_args.add_argument("description", type=str, help="Description of the ToDo", required=True)
+todo_post_args.add_argument("user_id", type=int, help="User_ID of the ToDo", required=True)
 
 resource_fields = {
     'id': fields.Integer, 
@@ -144,18 +144,22 @@ resource_fields = {
     'user_id': fields.Integer 
 }
 
-class Todo(Resource):
+class AllTodos(Resource):
+    @marshal_with(resource_fields)
+    def get(self):
+        # Retrieve all ToDo items from the database
+        todos = Todo.query.all()
+        return todos
+
+api.add_resource(AllTodos, '/api/todos')
+
+class SpecificTodo(Resource):
     @marshal_with(resource_fields)
     def get(self, todo_id):
-        return
+        # Retrieve the ToDo with the given ID
+        todo = Todo.query.get(todo_id)
+        if not todo:
+            abort(404, message="Todo not found")
+        return todo
 
-    @marshal_with(resource_fields)
-    def post(self, todo_id):
-        return
-
-    @marshal_with(resource_fields)
-    def patch(self, todo_id):
-        return
-
-    def delete(self, todo_id):
-        return
+api.add_resource(SpecificTodo, '/api/todo/<int:todo_id>')
