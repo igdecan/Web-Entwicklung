@@ -137,6 +137,11 @@ todo_post_args = reqparse.RequestParser()
 todo_post_args.add_argument("description", type=str, help="Description of the ToDo", required=True)
 todo_post_args.add_argument("user_id", type=int, help="User_ID of the ToDo", required=True)
 
+todo_patch_args = reqparse.RequestParser()
+todo_patch_args.add_argument('complete', type=bool, help='ToDo completed or not')
+todo_patch_args.add_argument('description', type=str, help='Description of the ToDo')
+todo_patch_args.add_argument("user_id", type=int, help='User_ID of the ToDo')
+
 resource_fields = {
     'id': fields.Integer, 
     'complete': fields.Boolean, 
@@ -173,6 +178,23 @@ class SpecificTodo(Resource):
         db.session.add(todo)
         db.session.commit()
         return todo, 201
+    
+    @marshal_with(resource_fields)
+    def patch(self, todo_id):
+        args = todo_patch_args.parse_args()
+        result = Todo.query.filter_by(id=todo_id).first()
+        if not result:
+            abort(404, message='Todo doesnt exist, connot patch')
+
+        if args['complete'] is not None:
+            result.complete = args['complete']
+        if args['description'] is not None:
+            result.description = args['description']
+        if args['user_id'] is not None:
+            result.user_id = args['user_id']
+
+        db.session.commit()
+        return result
 
     def delete(self, todo_id):
         todo = Todo.query.get(todo_id)
