@@ -161,5 +161,17 @@ class SpecificTodo(Resource):
         if not todo:
             abort(404, message="Todo not found")
         return todo
+    
+    @marshal_with(resource_fields)
+    def post(self, todo_id):
+        args = todo_post_args.parse_args()
+        result = Todo.query.filter_by(id=todo_id).first()
+        if result:
+            abort(409, message='Todo id taken')
+
+        todo = Todo(id=todo_id, description=args['description'], user_id=args['user_id'])
+        db.session.add(todo)
+        db.session.commit()
+        return todo, 201
 
 api.add_resource(SpecificTodo, '/api/todo/<int:todo_id>')
