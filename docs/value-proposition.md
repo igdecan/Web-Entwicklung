@@ -11,9 +11,7 @@ nav_order: 1
 
 <details open markdown="Persona">
   <summary>
-  Create a value proposition and at least 1 persona. Then, ideate and prioritize at least 5 features that are
-  aligned with both value proposition and persona. Use a self-chosen format to structure the feature
-  descriptions. 
+  Persona 
   </summary>
   {: .text-delta }
 
@@ -31,9 +29,7 @@ nav_order: 1
 
 <details open markdown="Value Proposition">
   <summary>
-  Create a value proposition and at least 1 persona. Then, ideate and prioritize at least 5 features that are
-  aligned with both value proposition and persona. Use a self-chosen format to structure the feature
-  descriptions. 
+  Value Proposition
   </summary>
   {: .text-delta }
 
