@@ -1,13 +1,12 @@
 ---
-title: Goals
-parent: Team Evaluation
-nav_order: 1
+title: Data Model
+nav_order: 3
 ---
 
 [Jane Dane]
 {: .label }
 
-# [Goals achieved and missed]
+# [Data model]
 {: .no_toc }
 
 <details open markdown="block">

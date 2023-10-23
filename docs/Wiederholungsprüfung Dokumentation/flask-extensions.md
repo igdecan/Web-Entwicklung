@@ -1,13 +1,12 @@
 ---
-title: App Behavior
-parent: Technical Docs
+title: Flask Extensions
 nav_order: 2
 ---
 
 [Jane Dane]
 {: .label }
 
-# [App behavior]
+# [Flask-Extensions]
 {: .no_toc }
 
 <details open markdown="block">
