@@ -1,9 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, request, abort, flash
 from flask_bootstrap import Bootstrap5
+from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 import forms
 from flask_login import LoginManager, current_user, login_required
 
 app = Flask(__name__)
+api = Api(app)
 
 app.config.from_mapping(
     SECRET_KEY = 'secret_key_just_for_dev_environment',
@@ -13,7 +15,7 @@ app.config.from_mapping(
 from auth import auth
 app.register_blueprint(auth, url_prefix='/')
 
-from db import db, User, Todo, List, insert_sample
+from db import db, User, Todo, List
 
 bootstrap = Bootstrap5(app)
 
@@ -108,11 +110,6 @@ def list(id):
     else:
         return redirect(url_for('lists'))
 
-@app.route('/insert/sample')
-def run_insert_sample():
-    insert_sample()
-    return 'Database flushed and populated with some sample data.'
-
 @app.errorhandler(404)
 def http_not_found(e):
     return render_template('404.html'), 404
@@ -135,3 +132,76 @@ def ex(id):
         return render_template('ex2.html')
     else:
         abort(404)
+
+todo_post_args = reqparse.RequestParser()
+todo_post_args.add_argument("description", type=str, help="Description of the ToDo", required=True)
+todo_post_args.add_argument("user_id", type=int, help="User_ID of the ToDo", required=True)
+
+todo_patch_args = reqparse.RequestParser()
+todo_patch_args.add_argument('complete', type=bool, help='ToDo completed or not')
+todo_patch_args.add_argument('description', type=str, help='Description of the ToDo')
+todo_patch_args.add_argument("user_id", type=int, help='User_ID of the ToDo')
+
+resource_fields = {
+    'id': fields.Integer, 
+    'complete': fields.Boolean, 
+    'description': fields.String, 
+    'user_id': fields.Integer 
+}
+
+class AllTodos(Resource):
+    @marshal_with(resource_fields)
+    def get(self):
+        # Retrieve all ToDo items from the database
+        todos = Todo.query.all()
+        return todos
+
+api.add_resource(AllTodos, '/api/todos')
+
+class SpecificTodo(Resource):
+    @marshal_with(resource_fields)
+    def get(self, todo_id):
+        # Retrieve the ToDo with the given ID
+        todo = Todo.query.get(todo_id)
+        if not todo:
+            abort(404, message="Todo not found")
+        return todo
+    
+    @marshal_with(resource_fields)
+    def post(self, todo_id):
+        args = todo_post_args.parse_args()
+        result = Todo.query.filter_by(id=todo_id).first()
+        if result:
+            abort(409, message='Todo id taken')
+
+        todo = Todo(id=todo_id, description=args['description'], user_id=args['user_id'])
+        db.session.add(todo)
+        db.session.commit()
+        return todo, 201
+    
+    @marshal_with(resource_fields)
+    def patch(self, todo_id):
+        args = todo_patch_args.parse_args()
+        result = Todo.query.filter_by(id=todo_id).first()
+        if not result:
+            abort(404, message='Todo doesnt exist, connot patch')
+
+        if args['complete'] is not None:
+            result.complete = args['complete']
+        if args['description'] is not None:
+            result.description = args['description']
+        if args['user_id'] is not None:
+            result.user_id = args['user_id']
+
+        db.session.commit()
+        return result
+
+    def delete(self, todo_id):
+        todo = Todo.query.get(todo_id)
+        if not todo:
+            abort(404, message="Todo not found")
+        db.session.delete(todo)
+        db.session.commit()
+        return '', 204
+    
+api.add_resource(SpecificTodo, '/api/todo/<int:todo_id>')
